@@ -1,6 +1,7 @@
 #ifndef POINT_H
 #define POINT_H
 #include <iostream>
+#include "definitions.h"
 
 class point
 {
@@ -13,6 +14,8 @@ public:
     void draw();
     inline int x() { return _x; }
     inline int y() { return _y; }
+    inline int player_id() { return _player_id; }
+    inline void step(coord c);
 };
 
 #endif // POINT_H

@@ -23,8 +23,8 @@ class game
     map<coord,point*> *points;
 
     bool checkAllowCoord(int x, int y);
-    void isAccessiableStep(coord new_c, point* p);
-    void isAccessiableHop(coord new_c, point* p);
+    bool isAccessiableStep(pair<coord,coord> player_step);
+    bool isAccessiableHop(pair<coord,coord> player_step);
     int checkGameState();
     bool checkPointPlayer(coord);
     pair<coord,coord> getPlayerStep();

@@ -37,6 +37,14 @@ void drawEmptyPoint()
     cout << ".";
 }
 
+bool game::checkPointPlayer(coord c)
+{
+    if (points->at(c)->player_id() == currentPlayer)
+        return true;
+    else
+        return false;
+}
+
 int game::calcCellsCountInField(bool player_id)
 {
     return 0;
@@ -44,8 +52,7 @@ int game::calcCellsCountInField(bool player_id)
 
 void game::drawGameMap()
 {
-    char sym = 'a';
-    cout << " ";
+    cout << "  ";
     for (int i = 0; i < _width * 3; i++)
     {
         std::cout.width(3);
@@ -54,7 +61,8 @@ void game::drawGameMap()
     cout << endl;
     for (int i = 0; i < _height *3; i++)
     {
-        cout << sym++;
+        cout.width(2);
+        cout << i;
         for (int j = 0; j < _width * 3; j++)
         {
             if (checkAllowCoord(j,i))
@@ -80,16 +88,54 @@ void game::drawGameMap()
     cout << "Cells in players field: Player 1 - " << calcCellsCountInField(false) << " Player 2 - " << calcCellsCountInField(true) << endl;
 }
 
-pair<coord,coord> getPlayerStep()
+pair<coord,coord> game::getPlayerStep()
 {
+    coord point_pos, new_pos;
+    cout << "Player" << (currentPlayer ? '2' : '1') << " step" << endl;
+    cout << "Insert point position (x): ";
+    cin >> point_pos.first;
+    cout << "(y): ";
+    cin >> point_pos.second;
+    cout << endl << "Insert new position (x): ";
+    cin >> new_pos.first;
+    cout << "(y): ";
+    cin >> new_pos.second;
+    return pair<coord,coord>(point_pos, new_pos);
 }
+
+bool game::step(pair<coord,coord> player_step)
+{
+    if (!checkPointPlayer(player_step.first))
+    {
+        cout << "Error step. This is not your point." << endl;
+        return false;
+    }
+    if (isAccessiableStep(player_step) || isAccessiableHop(player_step) || isCanFindPath(player_step))
+    {
+        points->at(player_step.first)->step(player_step.second);
+        if (checkGameState() == 1)
+        {
+            finishGame();
+        }
+        else
+            currentPlayer = !currentPlayer;
+        return true;
+    }
+    else
+    {
+        cout << "Error step." << endl;
+        return false;
+    }
+}
+
+
 
 void game::mainLoop()
 {
-    while (true)
+    while (!finished)
     {
         drawGameMap();
-       // step(getPlayerStep());
+        step(getPlayerStep());
     }
 }
 
