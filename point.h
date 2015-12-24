@@ -11,6 +11,8 @@ class point
 public:
     point(int x, int y, char symbol, int player_id);
     void draw();
+    inline int x() { return _x; }
+    inline int y() { return _y; }
 };
 
 #endif // POINT_H

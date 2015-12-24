@@ -9,5 +9,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     game.h \
-    point.h
+    point.h \
+    definitions.h \
+    coordinate_equal_pred.h
 

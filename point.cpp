@@ -10,6 +10,7 @@ point::point(int x, int y, char symbol, int player_id)
 
 void point::draw()
 {
+    std::cout.width(3);
     std::cout << _symbol;
 }
 
