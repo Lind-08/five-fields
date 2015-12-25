@@ -15,7 +15,11 @@ public:
     inline int x() { return _x; }
     inline int y() { return _y; }
     inline int player_id() { return _player_id; }
-    inline void step(coord c);
+    inline void step(coord c)
+    {
+        _x = c.first;
+        _y = c.second;
+    }
 };
 
 #endif // POINT_H

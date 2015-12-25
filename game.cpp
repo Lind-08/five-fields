@@ -2,6 +2,7 @@
 
 game::game(int cellsCount)
 {
+    finished = false;
     _width = cellsCount;
     _height = cellsCount;
     _cellsCount = cellsCount * cellsCount;
@@ -31,6 +32,107 @@ bool game::checkAllowCoord(int x, int y)
         return false;
 }
 
+bool game::isAccessiableStep(pair<coord, coord> player_step)
+{
+    int delta_x = abs(player_step.first.first - player_step.second.first);
+    int delta_y = abs(player_step.first.second - player_step.second.second);
+    if ((delta_x + delta_y) > 1)
+        return false;
+    try
+    {
+        points->at(player_step.second);
+    }
+    catch (...)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool game::isAccessiableHop(pair<coord, coord> player_step)
+{
+    int delta_x = abs(player_step.first.first - player_step.second.first);
+    int delta_y = abs(player_step.first.second - player_step.second.second);
+    if ((delta_x + delta_y) > 2)
+        return false;
+    coord c_temp(player_step.second);
+    if (delta_x > delta_y)
+        c_temp.first -= 1;
+    else
+        c_temp.second -= 1;
+    try
+    {
+        point *p = points->at(c_temp);
+        if (!p->player_id() != currentPlayer)
+           return false;
+        else
+        {
+            if (isAccessiableStep(pair<coord,coord>(player_step.second,c_temp)))
+                return true;
+            else return true;
+        }
+    }
+    catch(...)
+    {
+        return false;
+    }
+}
+
+bool game::isCanFindPath(pair<coord, coord> player_step)
+{
+    coord current_p = player_step.first;
+    stack<pair<int,coord>> path;
+    int dir = 0;
+    coord new_p(current_p);
+    while (true)
+    {
+        switch (dir)
+        {
+        case 0:
+            new_p.second += 1; break;
+        case 1:
+            new_p.first += 1; break;
+        case 2:
+            new_p.second -= 1; break;
+        case 3:
+            new_p.first -= 1; break;
+        default:
+           {
+                if (current_p == player_step.first)
+                    return false;
+                pair<int,coord> tmp = path.top();
+                path.pop();
+                dir = tmp.first;
+                current_p = tmp.second;
+                continue;
+            }
+        }
+        if (new_p == player_step.first)
+        {
+            pair<int,coord> tmp = path.top();
+            path.pop();
+            dir = tmp.first + 1;
+            current_p = tmp.second;
+        }
+        else
+        if (isAccessiableHop(pair<coord,coord>(current_p,new_p)))
+        {
+            if (new_p == player_step.second)
+                return true;
+            else
+            {
+                path.push(pair<int,coord>(dir,current_p));
+                current_p = new_p;
+                dir = 0;
+            }
+        }
+        else
+        {
+            dir += 1;
+        }
+    }
+}
+
 void drawEmptyPoint()
 {
     cout.width(3);
@@ -39,7 +141,22 @@ void drawEmptyPoint()
 
 bool game::checkPointPlayer(coord c)
 {
-    if (points->at(c)->player_id() == currentPlayer)
+    try
+    {
+        if (points->at(c)->player_id() == currentPlayer)
+            return true;
+    }
+    catch (...)
+    {
+        return false;
+    }
+    return false;
+}
+
+bool game::checkGameState()
+{
+    int res = calcCellsCountInField(currentPlayer);
+    if (res == _cellsCount)
         return true;
     else
         return false;
@@ -47,7 +164,9 @@ bool game::checkPointPlayer(coord c)
 
 int game::calcCellsCountInField(bool player_id)
 {
-    return 0;
+    int first_x = 0;
+    int first_y = 0;
+    int
 }
 
 void game::drawGameMap()
@@ -113,7 +232,7 @@ bool game::step(pair<coord,coord> player_step)
     if (isAccessiableStep(player_step) || isAccessiableHop(player_step) || isCanFindPath(player_step))
     {
         points->at(player_step.first)->step(player_step.second);
-        if (checkGameState() == 1)
+        if (checkGameState())
         {
             finishGame();
         }
@@ -126,6 +245,12 @@ bool game::step(pair<coord,coord> player_step)
         cout << "Error step." << endl;
         return false;
     }
+}
+
+void game::finishGame()
+{
+    cout << "Player" << (currentPlayer ? '2' : '1') << " win!" << endl;
+    finished = true;
 }
 
 
