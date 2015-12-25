@@ -2,6 +2,9 @@
 
 game::game(int cellsCount)
 {
+    _player1symbol = '#';
+    _player2symbol = '@';
+    _emptysymbol = '.';
     finished = false;
     _width = cellsCount;
     _height = cellsCount;
@@ -87,7 +90,7 @@ bool game::isAccessiableHop(pair<coord, coord> player_step)
 bool game::isCanFindPath(pair<coord, coord> player_step)
 {
     coord current_p = player_step.first;
-    stack<pair<int,coord>> path;
+    stack<pair<int,coord> > path;
     int dir = 0;
     coord new_p(current_p);
     while (true)

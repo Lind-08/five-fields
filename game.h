@@ -15,9 +15,9 @@ class game
     int _width;
     int _height;
     int _cellsCount;
-    char _emptysymbol = '.';
-    char _player1symbol = '#';
-    char _player2symbol = '@';
+    char _emptysymbol;
+    char _player1symbol;
+    char _player2symbol;
     bool currentPlayer;
     bool finished;
     map<coord,point*> *points;
