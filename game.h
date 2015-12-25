@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <string>
 #include "point.h"
-#include "coordinate_equal_pred.h"
 #include "definitions.h"
 
 using namespace std;
